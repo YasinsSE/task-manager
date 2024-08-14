@@ -27,27 +27,27 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public TaskEntity createTask(TaskEntity task) {
-        // Task title boşsa hata fırlat
+        // Throw an error if the task title is empty
         if (task.getTaskTitle() == null || task.getTaskTitle().isEmpty()) {
             throw new IllegalArgumentException("Task title cannot be empty");
         }
 
-        // Task description boşsa hata fırlat
+        // Throw an error if the task description is empty
         if (task.getTaskDescription() == null || task.getTaskDescription().isEmpty()) {
             throw new IllegalArgumentException("Task description cannot be empty");
         }
 
-        // Geçmiş bir tarih için taskDueDate ayarlanıyorsa hata fırlat
+        // Throw an error if setting taskDueDate to a past date
         if (task.getTaskDueDate() != null && task.getTaskDueDate().isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("Task due date cannot be in the past");
         }
 
-        // taskStatus belirtilmemişse varsayılan olarak PENDING ata
+        // If taskStatus is not specified, default to PENDING
         if (task.getTaskStatus() == null) {
             task.setTaskStatus(TaskStatus.PENDING);
         }
 
-        // Eğer kullanıcı atanmışsa, kullanıcı mevcut mu kontrol et
+        // If user is assigned, check if user exists
         if (task.getUserId() != null) {
             Optional<UserEntity> userOptional = userRepository.findById(task.getUserId());
             if (!userOptional.isPresent()) {
@@ -55,12 +55,11 @@ public class TaskServiceImpl implements TaskService {
             }
         }
 
-        // Aynı kullanıcı için aynı başlıklı bir görev var mı kontrol et
+        // Check if there is a task with the same title for the same user
         if (task.getUserId() != null && taskRepository.existsByTaskTitleAndUserId(task.getTaskTitle(), task.getUserId())) {
             throw new IllegalArgumentException("Task with the same title already exists for the assigned user");
         }
 
-        // Task'ı kaydet
         return taskRepository.save(task);
     }
 
@@ -127,7 +126,6 @@ public class TaskServiceImpl implements TaskService {
 
             task.setUserId(userId);
 
-            // Kullanıcının taskId set'ine bu görevi ekliyoruz
             user.getTaskIds().add(taskId);
 
             taskRepository.save(task);
