@@ -1,8 +1,6 @@
 package com.project.task_manager.entity;
 
 import jakarta.persistence.*;
-
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -17,19 +15,18 @@ public class UserEntity {
     private String userPassword;
     private String role;
 
-    @ElementCollection
-    private Set<Long> taskIds = new HashSet<>();
+    @OneToMany(mappedBy = "user")
+    private Set<TaskEntity> tasks;
 
+    // Constructors
 
-// Constructors
-
-    public UserEntity(Long userId, String fullName, String userEmail, String userPassword, String role, Set<Long> taskIds) {
+    public UserEntity(Long userId, String fullName, String userEmail, String userPassword, String role, Set<TaskEntity> tasks) {
         this.userId = userId;
         this.fullName = fullName;
         this.userEmail = userEmail;
         this.userPassword = userPassword;
         this.role = role;
-        this.taskIds = taskIds;
+        this.tasks = tasks;
     }
 
     public UserEntity() {
@@ -77,11 +74,11 @@ public class UserEntity {
         this.role = role;
     }
 
-    public Set<Long> getTaskIds() {
-        return taskIds;
+    public Set<TaskEntity> getTasks() {
+        return tasks;
     }
 
-    public void setTaskIds(Set<Long> taskIds) {
-        this.taskIds = taskIds;
+    public void setTasks(Set<TaskEntity> tasks) {
+        this.tasks = tasks;
     }
 }

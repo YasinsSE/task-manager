@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService{
         UserEntity user = getUserById(userId);
 
         // Kullanıcının mevcut görevleri olup olmadığını kontrol et
-        if (user.getTaskIds() != null && !user.getTaskIds().isEmpty()) {
+        if (user.getTasks() != null && !user.getTasks().isEmpty()) {
             throw new IllegalStateException("User with Id " + userId + " cannot be deleted as they have assigned tasks.");
         }
 
@@ -68,13 +68,13 @@ public class UserServiceImpl implements UserService{
             userRepository.delete(user);
         } catch (Exception e) {
             // Hata oluşursa, bunu logla ve hata mesajı döndür
+            // Hatanın ayrıntılarını loglamak faydalı olabilir.
             System.err.println("Error occurred while deleting user with Id " + userId + ": " + e.getMessage());
             throw new RuntimeException("Failed to delete user with Id " + userId, e);
         }
 
         return "User with Id " + userId + " has been deleted successfully.";
     }
-
 
 
     @Override
