@@ -73,13 +73,13 @@ public class TaskController {
     }
 
     // Assign a task to a user (Admin only)
-    @PutMapping("/assign-task")
+    @PostMapping("/assign-task")
     public ResponseEntity<TaskEntity> assignTask(@RequestParam Long taskId, @RequestParam Long userId) {
         TaskEntity assignedTask = taskService.assignTask(taskId, userId);
         return ResponseEntity.ok(assignedTask);
     }
 
-    // Update task status
+    // Update task status (Users)
     @PutMapping("/update-task-status")
     public ResponseEntity<TaskEntity> updateTaskStatus(@RequestParam Long taskId, @RequestBody TaskStatus taskStatus) {
         TaskEntity updatedTask = taskService.updateTaskStatus(taskId, taskStatus);

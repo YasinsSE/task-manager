@@ -8,10 +8,9 @@ import java.util.List;
 
 public interface TaskRepository extends JpaRepository<TaskEntity, Long> {
     TaskEntity findByTaskId(Long taskId);
-    List<TaskEntity> findByUserId(Long userId);
+    List<TaskEntity> findByUser_UserId(Long userId);
+    List<TaskEntity> findByUser_FullName(String userName);
     List<TaskEntity> findByTaskStatus(TaskStatus taskStatus);  // PENDING, COMPLETED, IN_PROGRESS
-    List<TaskEntity> findByTaskStatusAndUserId(TaskStatus taskStatus, Long userId);
-    boolean existsByTaskTitleAndUserId(String taskTitle, Long userId);
-
+    List<TaskEntity> findByTaskStatusAndUser_UserId(TaskStatus taskStatus, Long userId);
 }
 

@@ -17,20 +17,21 @@ public class TaskEntity {
     @Enumerated(EnumType.STRING)
     private TaskStatus taskStatus = TaskStatus.PENDING; // Default value
 
-
-    private Long userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
     // Constructors
     public TaskEntity() {
     }
 
-    public TaskEntity(Long taskId, String taskTitle, String taskDescription, LocalDateTime taskDueDate, TaskStatus taskStatus, Long userId) {
+    public TaskEntity(Long taskId, String taskTitle, String taskDescription, LocalDateTime taskDueDate, TaskStatus taskStatus, UserEntity user) {
         this.taskId = taskId;
         this.taskTitle = taskTitle;
         this.taskDescription = taskDescription;
         this.taskDueDate = taskDueDate;
         this.taskStatus = taskStatus;
-        this.userId = userId;
+        this.user = user;
     }
 
     // Getters and Setters
@@ -75,11 +76,11 @@ public class TaskEntity {
         this.taskStatus = taskStatus;
     }
 
-    public Long getUserId() {
-        return userId;
+    public UserEntity getUser() {
+        return user;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUser(UserEntity user) {
+        this.user = user;
     }
 }
