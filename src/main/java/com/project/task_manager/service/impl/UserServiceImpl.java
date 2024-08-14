@@ -23,7 +23,8 @@ public class UserServiceImpl implements UserService{
     }
 
 
-
+    // TODO , while creating user fullname, email and password should be mandatory
+    // TODO , while deleting user, server getting 500 error but still deleting the user
     @Override
     @Transactional
     public UserEntity createUser(UserEntity user) {
@@ -32,7 +33,6 @@ public class UserServiceImpl implements UserService{
         }
         return userRepository.save(user);
     }
-
 
 
     @Override

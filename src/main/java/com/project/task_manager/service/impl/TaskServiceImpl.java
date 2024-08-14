@@ -24,6 +24,10 @@ public class TaskServiceImpl implements TaskService {
         this.userRepository = userRepository;
     }
 
+    // TODO , If the user to be assigned to the task is specified when creating the task, check if the userId exists.
+    // TODO , we should able to list completed tasks and non-completed task separately
+    // TODO , if user complete the task , we should move the task to the completedTasksList with taskEntity and userId
+    //  afterwards we should remove the task from user
     @Override
     @Transactional
     public TaskEntity createTask(TaskEntity task) {
