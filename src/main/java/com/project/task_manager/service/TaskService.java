@@ -14,5 +14,6 @@ public interface TaskService {
     public List<TaskEntity> getAllTasks();
     public TaskEntity assignTask(Long taskId, Long userId);
     public TaskEntity updateTaskStatus(Long taskId, TaskStatus taskStatus);
-
+    public List<TaskEntity> getCompletedTasks();
+    public List<TaskEntity> getNonCompletedTasks();
 }

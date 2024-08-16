@@ -1,5 +1,6 @@
 package com.project.task_manager.service.impl;
 
+import com.project.task_manager.entity.CompletedTask;
 import com.project.task_manager.entity.TaskEntity;
 import com.project.task_manager.entity.TaskStatus;
 import com.project.task_manager.entity.UserEntity;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -18,11 +20,14 @@ public class TaskServiceImpl implements TaskService {
 
     private TaskRepository taskRepository;
     private UserRepository userRepository;
+    private List<CompletedTask> completedTasksList = new ArrayList<>();
+
 
     public TaskServiceImpl(TaskRepository taskRepository, UserRepository userRepository) {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
     }
+
 
     @Override
     @Transactional
@@ -49,9 +54,9 @@ public class TaskServiceImpl implements TaskService {
 
         // If user is assigned, check if user exists
         if (task.getUserId() != null) {
-            Optional<UserEntity> userOptional = userRepository.findById(task.getUserId());
-            if (!userOptional.isPresent()) {
-                throw new IllegalArgumentException("Assigned user does not exist");
+            boolean userExists = userRepository.existsById(task.getUserId());
+            if (!userExists) {
+                throw new CustomNotFoundException("Assigned user with Id " + task.getUserId() + " does not exist");
             }
         }
 
@@ -141,13 +146,38 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public TaskEntity updateTaskStatus(Long taskId, TaskStatus taskStatus) {
-        Optional<TaskEntity> taskOptional = taskRepository.findById(taskId);
-        if (taskOptional.isPresent()) {
-            TaskEntity task = taskOptional.get();
-            task.setTaskStatus(taskStatus);
-            return taskRepository.save(task);
-        } else {
-            throw new IllegalArgumentException("Task not found");
+        TaskEntity task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new CustomNotFoundException("Task not found"));
+
+        if (taskStatus == TaskStatus.COMPLETED) {
+            // Remove task from user's task list
+            UserEntity user = userRepository.findById(task.getUserId())
+                    .orElseThrow(() -> new CustomNotFoundException("User not found"));
+            user.getTaskIds().remove(taskId);
+
+            // Save changes to user entity
+            userRepository.save(user);
+
+            // Add to completed tasks list
+            completedTasksList.add(new CompletedTask(taskId, user.getUserId()));
+
+            // Optionally save task if you need to keep track of completed tasks separately
+            taskRepository.save(task);
         }
+
+        task.setTaskStatus(taskStatus);
+        return taskRepository.save(task);
     }
+
+
+    @Override
+    public List<TaskEntity> getCompletedTasks() {
+        return taskRepository.findByTaskStatus(TaskStatus.COMPLETED);
+    }
+
+    @Override
+    public List<TaskEntity> getNonCompletedTasks() {
+        return taskRepository.findByTaskStatus(TaskStatus.PENDING);
+    }
+
 }
