@@ -2,6 +2,7 @@ package com.project.task_manager.controller;
 
 
 import com.project.task_manager.entity.UserEntity;
+import com.project.task_manager.exception.CustomNotFoundException;
 import com.project.task_manager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,13 +40,18 @@ public class UserController {
     // Delete a user by ID (Admin only)
     @DeleteMapping("/delete-user")
     public ResponseEntity<String> deleteUser(@RequestParam Long userId) {
-        String result = userService.deleteUser(userId);
-        if (result.contains("Deleted Successfully")) {
-            return ResponseEntity.noContent().build();  // 204 No Content
-        } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();  // 500 Internal Server Error
+        try {
+            String result = userService.deleteUser(userId);
+            return ResponseEntity.ok(result);  // 200 OK with the message from the service
+        } catch (CustomNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());  // 404 Not Found if user doesn't exist
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while deleting the user.");
         }
     }
+
+
+
 
     // Get a user by ID
     @GetMapping("/list-user")

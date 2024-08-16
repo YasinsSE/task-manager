@@ -11,4 +11,5 @@ public interface UserService {
     public UserEntity getUserById(Long userId);
     public List<UserEntity> getAllUsers();
     public UserEntity updateUserRole(Long userId, String role);
+    public UserEntity updateUserTasks(Long userId, Long taskId);
 }

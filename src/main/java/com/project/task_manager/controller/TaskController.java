@@ -65,6 +65,19 @@ public class TaskController {
         return ResponseEntity.ok(tasks);
     }
 
+    // Get completed tasks
+    @GetMapping("completed-tasks")
+    public ResponseEntity<List<TaskEntity>> getCompletedTasks() {
+        List<TaskEntity> completedTasks = taskService.getCompletedTasks();
+        return ResponseEntity.ok(completedTasks);
+    }
+
+    @GetMapping("non-completed-tasks")
+    public ResponseEntity<List<TaskEntity>> getNonCompletedTasks() {
+        List<TaskEntity> nonCompletedTasks = taskService.getNonCompletedTasks();
+        return ResponseEntity.ok(nonCompletedTasks);
+    }
+
     // Get a single task by ID
     @GetMapping("/list-task")
     public ResponseEntity<TaskEntity> getTask(@RequestParam Long taskId) {

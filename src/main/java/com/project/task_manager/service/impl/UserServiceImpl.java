@@ -23,16 +23,28 @@ public class UserServiceImpl implements UserService{
     }
 
 
-    // TODO , while creating user fullname, email and password should be mandatory
-    // TODO , while deleting user, server getting 500 error but still deleting the user
     @Override
     @Transactional
     public UserEntity createUser(UserEntity user) {
+
+        if (user.getFullName() == null || user.getFullName().isEmpty()) {
+            throw new IllegalArgumentException("Full name is mandatory");
+        }
+
+        if (user.getUserEmail() == null || user.getUserEmail().isEmpty()) {
+            throw new IllegalArgumentException("Email is mandatory");
+        }
+
+        if (user.getUserPassword() == null || user.getUserPassword().isEmpty()) {
+            throw new IllegalArgumentException("Password is mandatory");
+        }
+
         if (user.getRole() == null || user.getRole().isEmpty()) {
             user.setRole("USER");
         }
         return userRepository.save(user);
     }
+
 
 
     @Override
@@ -53,6 +65,18 @@ public class UserServiceImpl implements UserService{
 
         return userRepository.save(existingUser);
     }
+
+    @Override
+    @Transactional
+    public UserEntity updateUserTasks(Long userId, Long taskId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomNotFoundException("User not found"));
+
+        user.getTaskIds().remove(taskId);
+
+        return userRepository.save(user);
+    }
+
 
     @Override
     @Transactional
