@@ -32,7 +32,7 @@ The project includes robust validation mechanisms and exception handling:
 - **Graceful Deletion:** Deleting users and tasks is handled gracefully, with appropriate error messages returned in case of issues.
 
 ### Lombok Integration
-- **Lombok Annotations:**  Added Lombok annotations to reduce boilerplate code, improve readability, and simplify the management of entity classes..
+- **Lombok Annotations:**  Added Lombok annotations to reduce boilerplate code, improve readability, and simplify the management of entity classes.
 - **Code Optimization:** Refactored code to leverage Lombok for generating getters, setters, and constructors, enhancing code maintainability and reducing manual coding effort.
 
 ## Project Structure
