@@ -1,7 +1,6 @@
 package com.project.task_manager.controller;
 
 import com.project.task_manager.entity.TaskEntity;
-import com.project.task_manager.entity.TaskStatus;
 import com.project.task_manager.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -94,7 +93,7 @@ public class TaskController {
 
     // Update task status
     @PutMapping("/update-task-status")
-    public ResponseEntity<TaskEntity> updateTaskStatus(@RequestParam Long taskId, @RequestBody TaskStatus taskStatus) {
+    public ResponseEntity<TaskEntity> updateTaskStatus(@RequestParam Long taskId, @RequestBody TaskEntity.TaskStatus taskStatus) {
         TaskEntity updatedTask = taskService.updateTaskStatus(taskId, taskStatus);
         return ResponseEntity.ok(updatedTask);
     }

@@ -1,85 +1,49 @@
 package com.project.task_manager.entity;
 
 import jakarta.persistence.*;
-
-
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class TaskEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long taskId;
     private String taskTitle;
     private String taskDescription;
     private LocalDateTime taskDueDate;
+    private Long userId;
 
     @Enumerated(EnumType.STRING)
     private TaskStatus taskStatus = TaskStatus.PENDING; // Default value
 
 
-    private Long userId;
+    @ElementCollection
+    private Set<Long> completedTaskIds = new HashSet<>();
 
-    // Constructors
-    public TaskEntity() {
+    public enum TaskStatus {
+        PENDING, IN_PROGRESS, COMPLETED
     }
 
-    public TaskEntity(Long taskId, String taskTitle, String taskDescription, LocalDateTime taskDueDate, TaskStatus taskStatus, Long userId) {
-        this.taskId = taskId;
-        this.taskTitle = taskTitle;
-        this.taskDescription = taskDescription;
-        this.taskDueDate = taskDueDate;
-        this.taskStatus = taskStatus;
-        this.userId = userId;
-    }
+    @Data
+    @NoArgsConstructor
+    public static class CompletedTask {
+        private Long userId;
+        private Long taskId;
 
-    // Getters and Setters
-
-    public Long getTaskId() {
-        return taskId;
-    }
-
-    public void setTaskId(Long taskId) {
-        this.taskId = taskId;
-    }
-
-    public String getTaskTitle() {
-        return taskTitle;
-    }
-
-    public void setTaskTitle(String taskTitle) {
-        this.taskTitle = taskTitle;
-    }
-
-    public String getTaskDescription() {
-        return taskDescription;
-    }
-
-    public void setTaskDescription(String taskDescription) {
-        this.taskDescription = taskDescription;
-    }
-
-    public LocalDateTime getTaskDueDate() {
-        return taskDueDate;
-    }
-
-    public void setTaskDueDate(LocalDateTime taskDueDate) {
-        this.taskDueDate = taskDueDate;
-    }
-
-    public TaskStatus getTaskStatus() {
-        return taskStatus;
-    }
-
-    public void setTaskStatus(TaskStatus taskStatus) {
-        this.taskStatus = taskStatus;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
+        public CompletedTask(Long userId, Long taskId) {
+            this.userId = userId;
+            this.taskId = taskId;
+        }
     }
 }

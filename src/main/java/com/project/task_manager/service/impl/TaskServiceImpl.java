@@ -1,8 +1,6 @@
 package com.project.task_manager.service.impl;
 
-import com.project.task_manager.entity.CompletedTask;
 import com.project.task_manager.entity.TaskEntity;
-import com.project.task_manager.entity.TaskStatus;
 import com.project.task_manager.entity.UserEntity;
 import com.project.task_manager.exception.CustomNotFoundException;
 import com.project.task_manager.repository.TaskRepository;
@@ -18,9 +16,9 @@ import java.util.Optional;
 @Service
 public class TaskServiceImpl implements TaskService {
 
-    private TaskRepository taskRepository;
-    private UserRepository userRepository;
-    private List<CompletedTask> completedTasksList = new ArrayList<>();
+    private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
+    private List<TaskEntity.CompletedTask> completedTasksList = new ArrayList<>();
 
 
     public TaskServiceImpl(TaskRepository taskRepository, UserRepository userRepository) {
@@ -49,7 +47,7 @@ public class TaskServiceImpl implements TaskService {
 
         // If taskStatus is not specified, default to PENDING
         if (task.getTaskStatus() == null) {
-            task.setTaskStatus(TaskStatus.PENDING);
+            task.setTaskStatus(TaskEntity.TaskStatus.PENDING);
         }
 
         // If user is assigned, check if user exists
@@ -145,11 +143,11 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    public TaskEntity updateTaskStatus(Long taskId, TaskStatus taskStatus) {
+    public TaskEntity updateTaskStatus(Long taskId, TaskEntity.TaskStatus taskStatus) {
         TaskEntity task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new CustomNotFoundException("Task not found"));
 
-        if (taskStatus == TaskStatus.COMPLETED) {
+        if (taskStatus == TaskEntity.TaskStatus.COMPLETED) {
             // Remove task from user's task list
             UserEntity user = userRepository.findById(task.getUserId())
                     .orElseThrow(() -> new CustomNotFoundException("User not found"));
@@ -159,7 +157,7 @@ public class TaskServiceImpl implements TaskService {
             userRepository.save(user);
 
             // Add to completed tasks list
-            completedTasksList.add(new CompletedTask(taskId, user.getUserId()));
+            completedTasksList.add(new TaskEntity.CompletedTask(taskId, user.getUserId()));
 
             // Optionally save task if you need to keep track of completed tasks separately
             taskRepository.save(task);
@@ -172,12 +170,12 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskEntity> getCompletedTasks() {
-        return taskRepository.findByTaskStatus(TaskStatus.COMPLETED);
+        return taskRepository.findByTaskStatus(TaskEntity.TaskStatus.COMPLETED);
     }
 
     @Override
     public List<TaskEntity> getNonCompletedTasks() {
-        return taskRepository.findByTaskStatus(TaskStatus.PENDING);
+        return taskRepository.findByTaskStatus(TaskEntity.TaskStatus.PENDING);
     }
 
 }

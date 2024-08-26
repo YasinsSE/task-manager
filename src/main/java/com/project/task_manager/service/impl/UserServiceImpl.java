@@ -1,7 +1,5 @@
 package com.project.task_manager.service.impl;
 
-import com.project.task_manager.entity.TaskEntity;
-import com.project.task_manager.entity.TaskStatus;
 import com.project.task_manager.entity.UserEntity;
 import com.project.task_manager.exception.CustomNotFoundException;
 import com.project.task_manager.repository.TaskRepository;
