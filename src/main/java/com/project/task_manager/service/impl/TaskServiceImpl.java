@@ -1,13 +1,14 @@
 package com.project.task_manager.service.impl;
 
-import com.project.task_manager.entity.CompletedTask;
+import com.project.task_manager.dto.TaskRequestDTO;
+import com.project.task_manager.dto.TaskResponseDTO;
 import com.project.task_manager.entity.TaskEntity;
-import com.project.task_manager.entity.TaskStatus;
 import com.project.task_manager.entity.UserEntity;
 import com.project.task_manager.exception.CustomNotFoundException;
 import com.project.task_manager.repository.TaskRepository;
 import com.project.task_manager.repository.UserRepository;
 import com.project.task_manager.service.TaskService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,23 +16,45 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 @Service
+@RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
 
-    private TaskRepository taskRepository;
-    private UserRepository userRepository;
-    private List<CompletedTask> completedTasksList = new ArrayList<>();
+    private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
+    private final List<TaskEntity.CompletedTask> completedTasksList = new ArrayList<>();
 
 
-    public TaskServiceImpl(TaskRepository taskRepository, UserRepository userRepository) {
-        this.taskRepository = taskRepository;
-        this.userRepository = userRepository;
+
+    private TaskResponseDTO convertToDTO(TaskEntity taskEntity) {
+        TaskResponseDTO dto = new TaskResponseDTO();
+        dto.setTaskId(taskEntity.getTaskId());
+        dto.setTaskTitle(taskEntity.getTaskTitle());
+        dto.setTaskDescription(taskEntity.getTaskDescription());
+        dto.setTaskDueDate(taskEntity.getTaskDueDate());
+        dto.setUserId(taskEntity.getUserId());
+        dto.setTaskStatus(taskEntity.getTaskStatus());
+        return dto;
+    }
+
+    private TaskEntity convertToEntity(TaskRequestDTO dto) {
+        TaskEntity taskEntity = new TaskEntity();
+        taskEntity.setTaskId(dto.getTaskId());
+        taskEntity.setTaskTitle(dto.getTaskTitle());
+        taskEntity.setTaskDescription(dto.getTaskDescription());
+        taskEntity.setTaskDueDate(dto.getTaskDueDate());
+        taskEntity.setUserId(dto.getUserId());
+        taskEntity.setTaskStatus(dto.getTaskStatus());
+        return taskEntity;
     }
 
 
     @Override
     @Transactional
-    public TaskEntity createTask(TaskEntity task) {
+    public TaskResponseDTO createTask(TaskRequestDTO taskDTO) {
+        TaskEntity task = convertToEntity(taskDTO);
+
         // Throw an error if the task title is empty
         if (task.getTaskTitle() == null || task.getTaskTitle().isEmpty()) {
             throw new IllegalArgumentException("Task title cannot be empty");
@@ -49,7 +72,7 @@ public class TaskServiceImpl implements TaskService {
 
         // If taskStatus is not specified, default to PENDING
         if (task.getTaskStatus() == null) {
-            task.setTaskStatus(TaskStatus.PENDING);
+            task.setTaskStatus(TaskEntity.TaskStatus.PENDING);
         }
 
         // If user is assigned, check if user exists
@@ -65,33 +88,34 @@ public class TaskServiceImpl implements TaskService {
             throw new IllegalArgumentException("Task with the same title already exists for the assigned user");
         }
 
-        return taskRepository.save(task);
+        return convertToDTO(taskRepository.save(task));
     }
 
     @Override
     @Transactional
-    public TaskEntity updateTask(TaskEntity task) {
-        TaskEntity existingTask = taskRepository.findById(task.getTaskId())
+    public TaskResponseDTO updateTask(TaskRequestDTO taskDTO) {
+        TaskEntity existingTask = taskRepository.findById(taskDTO.getTaskId())
                 .orElseThrow(() -> new CustomNotFoundException("Task not found"));
 
-        if (task.getTaskTitle() != null && !task.getTaskTitle().isEmpty()) {
-            existingTask.setTaskTitle(task.getTaskTitle());
+        if (taskDTO.getTaskTitle() != null && !taskDTO.getTaskTitle().isEmpty()) {
+            existingTask.setTaskTitle(taskDTO.getTaskTitle());
         }
-        if (task.getTaskDescription() != null && !task.getTaskDescription().isEmpty()) {
-            existingTask.setTaskDescription(task.getTaskDescription());
+        if (taskDTO.getTaskDescription() != null && !taskDTO.getTaskDescription().isEmpty()) {
+            existingTask.setTaskDescription(taskDTO.getTaskDescription());
         }
-        if (task.getTaskDueDate() != null) {
-            existingTask.setTaskDueDate(task.getTaskDueDate());
+        if (taskDTO.getTaskDueDate() != null) {
+            existingTask.setTaskDueDate(taskDTO.getTaskDueDate());
         }
-        if (task.getTaskStatus() != null) {
-            existingTask.setTaskStatus(task.getTaskStatus());
+        if (taskDTO.getTaskStatus() != null) {
+            existingTask.setTaskStatus(taskDTO.getTaskStatus());
         }
 
-        return taskRepository.save(existingTask);
+        return convertToDTO(taskRepository.save(existingTask));
     }
 
     @Override
-    public String deleteTask(TaskEntity task) {
+    public String deleteTask(TaskRequestDTO taskDTO) {
+        TaskEntity task = convertToEntity(taskDTO);
         taskRepository.delete(task);
         return "Task with Id " + task.getTaskId() + " Deleted Successfully";
     }
@@ -108,20 +132,26 @@ public class TaskServiceImpl implements TaskService {
 
 
     @Override
-    public TaskEntity getTask(Long taskId) {
-        return taskRepository.findById(taskId)
+    public TaskResponseDTO getTask(Long taskId) {
+        TaskEntity task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new CustomNotFoundException("Task with ID " + taskId + " not found"));
+        return convertToDTO(task);
     }
 
 
     @Override
-    public List<TaskEntity> getAllTasks() {
-        return taskRepository.findAll();
+    public List<TaskResponseDTO> getAllTasks() {
+        List<TaskEntity> tasks = taskRepository.findAll();
+        List<TaskResponseDTO> taskDTOs = new ArrayList<>();
+        for (TaskEntity task : tasks) {
+            taskDTOs.add(convertToDTO(task));
+        }
+        return taskDTOs;
     }
 
     @Override
     @Transactional
-    public TaskEntity assignTask(Long taskId, Long userId) {
+    public TaskResponseDTO assignTask(Long taskId, Long userId) {
         Optional<TaskEntity> taskOptional = taskRepository.findById(taskId);
         Optional<UserEntity> userOptional = userRepository.findById(userId);
 
@@ -136,7 +166,7 @@ public class TaskServiceImpl implements TaskService {
             taskRepository.save(task);
             userRepository.save(user);
 
-            return task;
+            return convertToDTO(task);
         } else {
             throw new IllegalArgumentException("Task or User not found");
         }
@@ -145,11 +175,11 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    public TaskEntity updateTaskStatus(Long taskId, TaskStatus taskStatus) {
+    public TaskResponseDTO updateTaskStatus(Long taskId, TaskEntity.TaskStatus taskStatus) {
         TaskEntity task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new CustomNotFoundException("Task not found"));
 
-        if (taskStatus == TaskStatus.COMPLETED) {
+        if (taskStatus == TaskEntity.TaskStatus.COMPLETED) {
             // Remove task from user's task list
             UserEntity user = userRepository.findById(task.getUserId())
                     .orElseThrow(() -> new CustomNotFoundException("User not found"));
@@ -159,25 +189,35 @@ public class TaskServiceImpl implements TaskService {
             userRepository.save(user);
 
             // Add to completed tasks list
-            completedTasksList.add(new CompletedTask(taskId, user.getUserId()));
+            completedTasksList.add(new TaskEntity.CompletedTask(taskId, user.getUserId()));
 
             // Optionally save task if you need to keep track of completed tasks separately
             taskRepository.save(task);
         }
 
         task.setTaskStatus(taskStatus);
-        return taskRepository.save(task);
+        return convertToDTO(taskRepository.save(task));
     }
 
 
     @Override
-    public List<TaskEntity> getCompletedTasks() {
-        return taskRepository.findByTaskStatus(TaskStatus.COMPLETED);
+    public List<TaskResponseDTO> getCompletedTasks() {
+        List<TaskEntity> tasks = taskRepository.findByTaskStatus(TaskEntity.TaskStatus.COMPLETED);
+        List<TaskResponseDTO> taskDTOs = new ArrayList<>();
+        for (TaskEntity task : tasks) {
+            taskDTOs.add(convertToDTO(task));
+        }
+        return taskDTOs;
     }
 
     @Override
-    public List<TaskEntity> getNonCompletedTasks() {
-        return taskRepository.findByTaskStatus(TaskStatus.PENDING);
+    public List<TaskResponseDTO> getNonCompletedTasks() {
+        List<TaskEntity> tasks = taskRepository.findByTaskStatus(TaskEntity.TaskStatus.PENDING);
+        List<TaskResponseDTO> taskDTOs = new ArrayList<>();
+        for (TaskEntity task : tasks) {
+            taskDTOs.add(convertToDTO(task));
+        }
+        return taskDTOs;
     }
 
 }

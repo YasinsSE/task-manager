@@ -31,6 +31,10 @@ The project includes robust validation mechanisms and exception handling:
 - **Past Due Date Checks:** Tasks cannot be assigned a due date in the past, preventing unrealistic task deadlines.
 - **Graceful Deletion:** Deleting users and tasks is handled gracefully, with appropriate error messages returned in case of issues.
 
+### Lombok Integration
+- **Lombok Annotations:**  Added Lombok annotations to reduce boilerplate code, improve readability, and simplify the management of entity classes.
+- **Code Optimization:** Refactored code to leverage Lombok for generating getters, setters, and constructors, enhancing code maintainability and reducing manual coding effort.
+
 ## Project Structure
 
 - **Entities:** `UserEntity`, `TaskEntity` – Define the core data structures and relationships.
