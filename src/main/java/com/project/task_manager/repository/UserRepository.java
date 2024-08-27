@@ -14,4 +14,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query("SELECT u.userId FROM UserEntity u WHERE u.fullName IS NULL AND u.userEmail IS NULL AND u.userPassword IS NULL")
     List<Long> findEmptyUserIds();
 
+    boolean existsByUserEmail(String userEmail);
 }

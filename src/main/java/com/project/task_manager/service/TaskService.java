@@ -1,18 +1,20 @@
 package com.project.task_manager.service;
 
+import com.project.task_manager.dto.TaskRequestDTO;
+import com.project.task_manager.dto.TaskResponseDTO;
 import com.project.task_manager.entity.TaskEntity;
 
 import java.util.List;
 
 public interface TaskService {
-    public TaskEntity createTask(TaskEntity task);
-    public TaskEntity updateTask(TaskEntity task);
-    public String deleteTask(TaskEntity task);
+    public TaskResponseDTO createTask(TaskRequestDTO taskDTO);
+    public TaskResponseDTO updateTask(TaskRequestDTO taskDTO);
+    public String deleteTask(TaskRequestDTO taskDTO);
     public String deleteTaskById(Long taskId);
-    public TaskEntity getTask(Long taskId);
-    public List<TaskEntity> getAllTasks();
-    public TaskEntity assignTask(Long taskId, Long userId);
-    public TaskEntity updateTaskStatus(Long taskId, TaskEntity.TaskStatus taskStatus);
-    public List<TaskEntity> getCompletedTasks();
-    public List<TaskEntity> getNonCompletedTasks();
+    public TaskResponseDTO getTask(Long taskId);
+    public List<TaskResponseDTO> getAllTasks();
+    public TaskResponseDTO assignTask(Long taskId, Long userId);
+    public TaskResponseDTO updateTaskStatus(Long taskId, TaskEntity.TaskStatus taskStatus);
+    public List<TaskResponseDTO> getCompletedTasks();
+    public List<TaskResponseDTO> getNonCompletedTasks();
 }

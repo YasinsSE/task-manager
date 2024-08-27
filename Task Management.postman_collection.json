@@ -34,7 +34,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/user-api/list-user?userId=1",
+							"raw": "http://localhost:8080/user-api/list-user?userId=14",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -47,7 +47,7 @@
 							"query": [
 								{
 									"key": "userId",
-									"value": "1"
+									"value": "14"
 								}
 							]
 						}
@@ -61,7 +61,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"fullName\": \"User for deletion\",\r\n    \"userEmail\": \"try1@user.com\",\r\n    \"userPassword\": \"123123\"\r\n}",
+							"raw": "{\r\n  \"fullName\": \"Yasin YILDIRIM\",\r\n  \"userEmail\": \"yasin@example.com\",\r\n  \"userPassword\": \"password123\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -89,7 +89,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"userId\": 2,\r\n    \"fullName\": \"User Doer1\",\r\n    \"userEmail\": \"doer1@user.com\",\r\n    \"userPassword\": \"123123\"\r\n}",
+							"raw": "{\r\n    \"userId\": 3,\r\n    \"fullName\": \"User Doer1\",\r\n    \"userEmail\": \"doer1@user.com\",\r\n    \"userPassword\": \"password123\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -116,7 +116,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/user-api/delete-user?userId=1",
+							"raw": "localhost:8080/user-api/delete-user?userId=18",
 							"host": [
 								"localhost"
 							],
@@ -128,7 +128,7 @@
 							"query": [
 								{
 									"key": "userId",
-									"value": "1"
+									"value": "18"
 								}
 							]
 						}
@@ -141,7 +141,7 @@
 						"method": "PUT",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/user-api/update-user-role?userId=4&role=ADMIN",
+							"raw": "localhost:8080/user-api/update-user-role?userId=3&role=ADMIN",
 							"host": [
 								"localhost"
 							],
@@ -153,7 +153,7 @@
 							"query": [
 								{
 									"key": "userId",
-									"value": "4"
+									"value": "3"
 								},
 								{
 									"key": "role",
@@ -189,12 +189,50 @@
 					"response": []
 				},
 				{
+					"name": "ListCompletedTasks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/task-api/completed-tasks",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"task-api",
+								"completed-tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ListNonCompletedTasks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/task-api/non-completed-tasks",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"task-api",
+								"non-completed-tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "ListTask",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/task-api/list-task?taskId=2",
+							"raw": "http://localhost:8080/task-api/list-task?taskId=10",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -207,7 +245,7 @@
 							"query": [
 								{
 									"key": "taskId",
-									"value": "2"
+									"value": "10"
 								}
 							]
 						}
@@ -221,7 +259,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"taskTitle\": \"First Task\",\r\n    \"taskDescription\": \"This is the first task\",\r\n    \"taskDueDate\": \"2024-08-15T12:00:00\"\r\n}\r\n\r\n",
+							"raw": "{\r\n  \"taskTitle\": \"New Task\",\r\n  \"taskDescription\": \"This is a new task\",\r\n  \"taskDueDate\": \"2024-12-31T23:59:59\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -249,7 +287,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"taskId\": 2,\r\n    \"taskTitle\": \"Updated Task Title\",\r\n    \"taskDescription\": \"This is an updated task description\",\r\n    \"taskDueDate\": \"2024-08-20T17:00:00\"\r\n}\r\n",
+							"raw": "    {\r\n        \"taskId\": 11,\r\n        \"taskTitle\": \"Created task for database\",\r\n        \"taskDescription\": \"New task for updating\",\r\n        \"taskDueDate\": \"2024-08-30T15:00:00\",\r\n        \"taskStatus\": \"PENDING\"    }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -277,7 +315,7 @@
 						"method": "PUT",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/task-api/assign-task?taskId=2&userId=9",
+							"raw": "localhost:8080/task-api/assign-task?taskId=11&userId=14",
 							"host": [
 								"localhost"
 							],
@@ -289,11 +327,11 @@
 							"query": [
 								{
 									"key": "taskId",
-									"value": "2"
+									"value": "11"
 								},
 								{
 									"key": "userId",
-									"value": "9"
+									"value": "14"
 								}
 							]
 						}
@@ -315,7 +353,7 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/task-api/update-task-status?taskId=2",
+							"raw": "localhost:8080/task-api/update-task-status?taskId=11",
 							"host": [
 								"localhost"
 							],
@@ -327,7 +365,7 @@
 							"query": [
 								{
 									"key": "taskId",
-									"value": "2"
+									"value": "11"
 								}
 							]
 						}
@@ -340,7 +378,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "localhost:8080/task-api/delete-task/by-id?taskId=1",
+							"raw": "localhost:8080/task-api/delete-task/by-id?taskId=",
 							"host": [
 								"localhost"
 							],
@@ -353,7 +391,7 @@
 							"query": [
 								{
 									"key": "taskId",
-									"value": "1"
+									"value": ""
 								}
 							]
 						}
